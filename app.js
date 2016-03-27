@@ -4,6 +4,8 @@ var React = require('react'),
     $ = require('jquery'),
     Swiper = require('swiper');
 
+var windowHeight = $(window).height();
+
 var TopBar = React.createClass({
     displayName: 'TopBar',
 
@@ -11,10 +13,16 @@ var TopBar = React.createClass({
         return React.createElement(
             'div',
             { className: 'top-bar' },
+            React.createElement('div', { className: 'search-icon' }),
             React.createElement(SearchBar, { value: this.props.curKeyword, searchContentUpdate: this.props.onSearchContentUpdated }),
             React.createElement(
                 'span',
-                null,
+                { className: 'delete-btn', onClick: this.props.onDeleteContent },
+                'x'
+            ),
+            React.createElement(
+                'span',
+                { className: 'cancel-btn' },
                 '取消'
             )
         );
@@ -27,7 +35,8 @@ var SearchBar = React.createClass({
     render: function () {
         return React.createElement('input', { type: 'text', placeholder: '请输入你想搜索的内容', className: 'search-bar', value: this.props.value,
             onChange: this.props.searchContentUpdate,
-            onKeyDown: this.props.searchContentUpdate
+            onKeyDown: this.props.searchContentUpdate,
+            onBlur: this.props.searchContentUpdate
         });
     }
 });
@@ -78,7 +87,7 @@ var ResultItem = React.createClass({
             { className: 'result-item' },
             React.createElement('img', { src: this.props.thumbnail }),
             React.createElement(
-                'span',
+                'div',
                 null,
                 this.props.content
             )
@@ -91,14 +100,31 @@ var ResultList = React.createClass({
 
     render: function () {
         return React.createElement(
+            'ul',
+            null,
+            this.props.results.map(function (result, index) {
+                return React.createElement(ResultItem, { key: index, thumbnail: result.img, content: result.text });
+            })
+        );
+    }
+});
+
+var EmptyMsg = React.createClass({
+    displayName: 'EmptyMsg',
+
+    render: function () {
+        return React.createElement(
             'div',
-            { className: 'scroll-area' },
+            { className: 'empty-result' },
             React.createElement(
-                'ul',
+                'p',
                 null,
-                this.props.results.map(function (result, index) {
-                    return React.createElement(ResultItem, { key: index, thumbnail: result.img, content: result.text });
-                })
+                '我们暂时还未发布相关内容哦，你可以将关键词'
+            ),
+            React.createElement(
+                'p',
+                null,
+                '发送给我们，我会督促小编尽快撰写~'
             )
         );
     }
@@ -108,10 +134,12 @@ var SearchApp = React.createClass({
     displayName: 'SearchApp',
 
     _setScrollAreaHeight: function () {
-        var wh = $(window).height();
+        var $scrollArea = $('.scroll-area');
+        var wh = windowHeight;
         var th = $('.top-area').height();
 
-        $('.scroll-area').css('height', wh - th + 'px');
+        $scrollArea.css('height', wh - th + 'px');
+        $scrollArea.scrollTop(0);
     },
     _getKeywordsList: function () {
         $.ajax({
@@ -130,8 +158,10 @@ var SearchApp = React.createClass({
             dataType: 'json',
             success: function (data) {
                 this.setState({
+                    isDefault: true,
                     resultList: data
                 });
+                setTimeout(this._setScrollAreaHeight, 500);
             }.bind(this)
         });
     },
@@ -143,6 +173,7 @@ var SearchApp = React.createClass({
                     isDefault: false,
                     resultList: data
                 });
+                setTimeout(this._setScrollAreaHeight, 500);
             }.bind(this)
         });
     },
@@ -169,9 +200,16 @@ var SearchApp = React.createClass({
             curKeyword: e.target.value
         });
 
-        if (e.keyCode === 13) {
+        if (e.keyCode === 13 || e.type === 'blur') {
             this._getContentWithInputValue();
         }
+    },
+    deleteInputContent: function () {
+        this.setState({
+            curKeyword: ''
+        });
+
+        this._getDefaultContent();
     },
     componentDidUpdate: function () {
         this._setScrollAreaHeight();
@@ -183,15 +221,23 @@ var SearchApp = React.createClass({
             React.createElement(
                 'div',
                 { className: 'top-area' },
-                React.createElement(TopBar, { curKeyword: this.state.curKeyword, onSearchContentUpdated: this.updateWithSearchContent }),
-                React.createElement(KeywordsBar, { keywords: this.state.keywords, onKeywordSelected: this.updateWithKeyword }),
+                React.createElement(TopBar, { curKeyword: this.state.curKeyword,
+                    onSearchContentUpdated: this.updateWithSearchContent,
+                    onDeleteContent: this.deleteInputContent
+                }),
+                React.createElement(KeywordsBar, { keywords: this.state.keywords, onKeywordSelected: this.updateWithKeyword })
+            ),
+            React.createElement(
+                'div',
+                { className: 'scroll-area' },
                 this.state.isDefault ? React.createElement(
                     'p',
                     { className: 'msg' },
                     '大家都在看:'
-                ) : null
-            ),
-            React.createElement(ResultList, { results: this.state.resultList })
+                ) : null,
+                this.state.resultList.length === 0 && !this.state.isDefault ? React.createElement(EmptyMsg, null) : null,
+                React.createElement(ResultList, { results: this.state.resultList })
+            )
         );
     }
 });

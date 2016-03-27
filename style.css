@@ -47,6 +47,15 @@ table {
     border-spacing: 0;
 }
 
+textarea:focus, input:focus{
+    outline: none;
+}
+
+::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
 .search-view {
     overflow: hidden;
 }
@@ -59,27 +68,74 @@ table {
 .top-bar {
     position: relative;
     width: 100%;
-    height: 2.5rem;
+    height: 2rem;
     box-sizing: border-box;
-    padding: 0.8rem 0 0 0;
     background-color: #F0EFF5;
 }
 
-.top-bar span {
-    font-size: 0.5rem;
-    color: #ccc;
-    display: block;
+.top-bar .cancel-btn {
+    display: inline-block;
     height: 1rem;
+    line-height: 1rem;
     position: absolute;
     top: 50%;
     right: 8%;
+    margin-top: -0.5rem;
+    font-size: 0.7rem;
+    color: #1CA52A;
+}
+
+.top-bar .delete-btn {
+    display: inline-block;
+    border-radius: 100%;
+    width: 0.5rem;
+    height: 0.5rem;
+    line-height: 0.5rem;
+    text-align: center;
+    font-size: 0.4rem;
+    color: #fff;
+    background-color: #888;
+    position: absolute;
+    top: 50%;
+    right: 20%;
+    margin-top: -0.25rem;
+}
+
+.top-bar .search-icon {
+    width: 1rem;
+    height: 1rem;
+    background-image: url('./search_icon.png');
+    background-size: 0.6rem 0.6rem;
+    background-repeat: no-repeat;
+    background-position: center center;
+    position: absolute;
+    top: 50%;
+    left: 18%;
+    margin-top: -0.5rem;
+    z-index: 99;
 }
 
 .search-bar {
+     /* Remove First */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
     display: block;
     width: 65%;
-    height: 1rem;
+    height: 1.4rem;
     margin: 0 auto;
+    box-sizing: border-box;
+    padding: 0 1rem;
+    border-radius: 0.2rem;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    margin-top: -0.7rem;
+    box-shadow: none;
+    border: 1px solid #ccc;
+    font-size: 0.6rem;
 }
 
 .keywords-bar {
@@ -103,16 +159,15 @@ table {
 .msg {
     font-size: 0.6rem;
     color: #ccc;
-    padding: 0.4rem 0.6rem 0.4rem 0.6rem;
+    padding: 0.4rem 0.6rem 0rem 0.6rem;
 }
 
 .result-item {
-    display: flex;
-    align-items: center;
+    display: block;
     height: 3.5rem;
-    line-height: 3.5rem;
     border-bottom: 1px solid #f0f0f0;
     padding: 0 0.5rem;
+    overflow:hidden;
 }
 
 .result-item:last-child {
@@ -120,25 +175,60 @@ table {
 }
 
 .result-item img {
+    display: inline-block;
     width: 2rem;
     height: 2rem;
     padding: 0.1rem;
     margin-right: 0.6rem;
     float: left;
+    margin-top: 0.6rem;
 }
 
-.result-item span {
+.result-item div {
     display: inline-block;
-    line-height: 1rem;
+    float: left;
+    height: 3.5rem;
+    word-wrap: break-word;
+    word-break; break-all;
+    width: 80%;
     font-size: 0.6rem;
     color: #444;
-    float: left;
-    width: 70%;
-    overflow: hidden;
-text-overflow: ellipsis;
--webkit-line-clamp: 2;
-display: -webkit-box;
--webkit-box-orient: vertical;
+    display: -webkit-box; /* 老版本语法: Safari, iOS, Android browser, older WebKit browsers. */
+    display: -moz-box; /* 老版本语法: Firefox (buggy) */
+    display: -ms-flexbox; /* 混合版本语法: IE 10 */
+    display: -webkit-flex; /* 新版本语法: Chrome 21+ */
+    display: flex; /* 新版本语法: Opera 12.1, Firefox 22+ */
+    -webkit-box-align: center;
+    -moz-align-items: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.empty-result {
+    height: 100%;
+    display: -webkit-box; /* 老版本语法: Safari, iOS, Android browser, older WebKit browsers. */
+    display: -moz-box; /* 老版本语法: Firefox (buggy) */
+    display: -ms-flexbox; /* 混合版本语法: IE 10 */
+    display: -webkit-flex; /* 新版本语法: Chrome 21+ */
+    display: flex; /* 新版本语法: Opera 12.1, Firefox 22+ */
+
+    -webkit-box-pack: center;
+    -moz-justify-content: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-direction: normal;
+    -webkit-box-orient: vertical;
+    -moz-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+}
+
+.empty-result p {
+    width: 100%;
+    text-align: center;
+    font-size: 0.6rem;
+    color: #ccc;
+    margin: 0.5rem 0;
 }
 
 

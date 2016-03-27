@@ -6,6 +6,9 @@
   "dependencies": {
     "babel-preset-react": "^6.5.0",
     "babelify": "^7.2.0",
+    "browserify": "^13.0.0",
+    "gulp": "^3.9.1",
+    "gulp-uglify": "^1.5.3",
     "jquery": "^2.2.2",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
@@ -13,7 +16,9 @@
     "react-swipeable": "^3.1.0",
     "react-swiper": "^0.1.5",
     "swipe-js-iso": "^2.0.2",
-    "swiper": "^3.3.1"
+    "swiper": "^3.3.1",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
   },
   "devDependencies": {},
   "scripts": {

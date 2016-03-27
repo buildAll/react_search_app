@@ -3,12 +3,16 @@ var React = require('react'),
     $ = require('jquery'),
     Swiper = require('swiper');
 
+var windowHeight = $(window).height();
+
 var TopBar = React.createClass({
     render: function() {
         return (
             <div className="top-bar">
+                <div className="search-icon"></div>
                 <SearchBar value={this.props.curKeyword} searchContentUpdate={this.props.onSearchContentUpdated}/>
-                <span>取消</span>
+                <span className="delete-btn" onClick={this.props.onDeleteContent}>x</span>
+                <span className="cancel-btn">取消</span>
             </div>
         );
     }
@@ -20,6 +24,7 @@ var SearchBar = React.createClass({
             <input type="text" placeholder="请输入你想搜索的内容" className="search-bar" value={this.props.value}
             onChange={this.props.searchContentUpdate}
             onKeyDown={this.props.searchContentUpdate}
+            onBlur={this.props.searchContentUpdate}
             />
         );
     }
@@ -60,7 +65,9 @@ var ResultItem = React.createClass({
         return (
             <li className="result-item" >
                 <img src={this.props.thumbnail} />
-                <span>{this.props.content}</span>
+                <div>
+                    {this.props.content}
+                </div>
             </li>
         );
     }
@@ -69,23 +76,34 @@ var ResultItem = React.createClass({
 var ResultList = React.createClass({
    render: function() {
         return (
-            <div className="scroll-area">
-                <ul>
-                    {this.props.results.map(function(result, index) {
-                        return <ResultItem key={index} thumbnail={result.img} content={result.text}/>
-                    })}
-                </ul>
-            </div>
+            <ul>
+                {this.props.results.map(function(result, index) {
+                    return <ResultItem key={index} thumbnail={result.img} content={result.text}/>
+                })}
+            </ul>
         );
    }
 });
 
+var EmptyMsg = React.createClass({
+    render: function() {
+        return (
+            <div className="empty-result">
+                <p>我们暂时还未发布相关内容哦，你可以将关键词</p>
+                <p>发送给我们，我会督促小编尽快撰写~</p>
+            </div>
+        );
+    }
+});
+
 var SearchApp = React.createClass({
     _setScrollAreaHeight: function() {
-        var wh = $(window).height();
+        var $scrollArea = $('.scroll-area');
+        var wh = windowHeight;
         var th = $('.top-area').height();
 
-        $('.scroll-area').css('height', wh - th + 'px');
+        $scrollArea.css('height', wh - th + 'px');
+        $scrollArea.scrollTop(0);
     },
     _getKeywordsList: function() {
         $.ajax({
@@ -104,8 +122,10 @@ var SearchApp = React.createClass({
             dataType: 'json',
             success: function(data) {
                 this.setState({
+                    isDefault: true,
                     resultList: data
                 });
+                setTimeout(this._setScrollAreaHeight, 500)
             }.bind(this)
         });
     },
@@ -117,6 +137,7 @@ var SearchApp = React.createClass({
                     isDefault: false,
                     resultList: data
                 });
+                setTimeout(this._setScrollAreaHeight, 500)
             }.bind(this)
         });
     },
@@ -143,9 +164,16 @@ var SearchApp = React.createClass({
             curKeyword: e.target.value
         })
 
-        if (e.keyCode === 13) {
+        if (e.keyCode === 13 || e.type === 'blur') {
             this._getContentWithInputValue();
         }
+    },
+    deleteInputContent: function() {
+        this.setState({
+            curKeyword: ''
+        });
+
+        this._getDefaultContent();
     },
     componentDidUpdate: function() {
         this._setScrollAreaHeight();
@@ -154,11 +182,17 @@ var SearchApp = React.createClass({
         return (
             <div className="search-view">
                 <div className="top-area">
-                    <TopBar curKeyword={this.state.curKeyword} onSearchContentUpdated={this.updateWithSearchContent}/>
+                    <TopBar curKeyword={this.state.curKeyword}
+                        onSearchContentUpdated={this.updateWithSearchContent}
+                        onDeleteContent={this.deleteInputContent}
+                    />
                     <KeywordsBar keywords={this.state.keywords} onKeywordSelected={this.updateWithKeyword}/>
-                    {this.state.isDefault ? <p className="msg">大家都在看:</p> : null}
                 </div>
-                <ResultList results={this.state.resultList}/>
+                <div className="scroll-area">
+                    {this.state.isDefault ? <p className="msg">大家都在看:</p> : null}
+                    {this.state.resultList.length === 0 && !this.state.isDefault? <EmptyMsg /> : null}
+                    <ResultList results={this.state.resultList}/>
+                </div>
             </div>
         );
     }
