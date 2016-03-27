@@ -1,9 +1,8 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var React = require('react'),
     ReactDOM = require('react-dom'),
-    $ = require('jquery');
-
-var Swiper = require('swiper');
+    $ = require('jquery'),
+    Swiper = require('swiper');
 
 var TopBar = React.createClass({
     displayName: 'TopBar',
@@ -12,7 +11,7 @@ var TopBar = React.createClass({
         return React.createElement(
             'div',
             { className: 'top-bar' },
-            React.createElement(SearchBar, { value: this.props.curKeyword }),
+            React.createElement(SearchBar, { value: this.props.curKeyword, searchContentUpdate: this.props.onSearchContentUpdated }),
             React.createElement(
                 'span',
                 null,
@@ -25,13 +24,11 @@ var TopBar = React.createClass({
 var SearchBar = React.createClass({
     displayName: 'SearchBar',
 
-    getInitialState: function () {
-        return {
-            searchContent: ''
-        };
-    },
     render: function () {
-        return React.createElement('input', { type: 'text', placeholder: '请输入你想搜索的内容', className: 'search-bar', value: this.props.value });
+        return React.createElement('input', { type: 'text', placeholder: '请输入你想搜索的内容', className: 'search-bar', value: this.props.value,
+            onChange: this.props.searchContentUpdate,
+            onKeyDown: this.props.searchContentUpdate
+        });
     }
 });
 
@@ -116,11 +113,44 @@ var SearchApp = React.createClass({
 
         $('.scroll-area').css('height', wh - th + 'px');
     },
-    updateCurKeyWord: function (keywordBeSelected) {
+    _getKeywordsList: function () {
+        $.ajax({
+            url: 'data/keywords.json',
+            dataType: 'json',
+            success: function (data) {
+                this.setState({
+                    keywords: data
+                });
+            }.bind(this)
+        });
+    },
+    _getDefaultContent: function () {
+        $.ajax({
+            url: 'data/defaultresults.json',
+            dataType: 'json',
+            success: function (data) {
+                this.setState({
+                    resultList: data
+                });
+            }.bind(this)
+        });
+    },
+    _getContentWithInputValue: function () {
+        $.ajax({
+            url: 'data/keywordresults.json',
+            success: function (data) {
+                this.setState({
+                    isDefault: false,
+                    resultList: data
+                });
+            }.bind(this)
+        });
+    },
+    updateWithKeyword: function (keywordBeSelected) {
         this.setState({
-            isDefault: false,
             curKeyword: keywordBeSelected
         });
+        this._getContentWithInputValue();
     },
     getInitialState: function () {
         return {
@@ -131,26 +161,17 @@ var SearchApp = React.createClass({
         };
     },
     componentDidMount: function () {
-
-        $.ajax({
-            url: 'data/keywords.json',
-            dataType: 'json',
-            success: function (data) {
-                this.setState({
-                    keywords: data
-                });
-            }.bind(this)
+        this._getKeywordsList();
+        this._getDefaultContent();
+    },
+    updateWithSearchContent: function (e) {
+        this.setState({
+            curKeyword: e.target.value
         });
 
-        $.ajax({
-            url: 'data/defaultresults.json',
-            dataType: 'json',
-            success: function (data) {
-                this.setState({
-                    resultList: data
-                });
-            }.bind(this)
-        });
+        if (e.keyCode === 13) {
+            this._getContentWithInputValue();
+        }
     },
     componentDidUpdate: function () {
         this._setScrollAreaHeight();
@@ -162,8 +183,8 @@ var SearchApp = React.createClass({
             React.createElement(
                 'div',
                 { className: 'top-area' },
-                React.createElement(TopBar, { curKeyword: this.state.curKeyword }),
-                React.createElement(KeywordsBar, { keywords: this.state.keywords, onKeywordSelected: this.updateCurKeyWord }),
+                React.createElement(TopBar, { curKeyword: this.state.curKeyword, onSearchContentUpdated: this.updateWithSearchContent }),
+                React.createElement(KeywordsBar, { keywords: this.state.keywords, onKeywordSelected: this.updateWithKeyword }),
                 this.state.isDefault ? React.createElement(
                     'p',
                     { className: 'msg' },

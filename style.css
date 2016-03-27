@@ -107,6 +107,8 @@ table {
 }
 
 .result-item {
+    display: flex;
+    align-items: center;
     height: 3.5rem;
     line-height: 3.5rem;
     border-bottom: 1px solid #f0f0f0;
@@ -122,15 +124,21 @@ table {
     height: 2rem;
     padding: 0.1rem;
     margin-right: 0.6rem;
-    margin-top: 0.6rem;
     float: left;
 }
 
 .result-item span {
     display: inline-block;
+    line-height: 1rem;
     font-size: 0.6rem;
     color: #444;
     float: left;
+    width: 70%;
+    overflow: hidden;
+text-overflow: ellipsis;
+-webkit-line-clamp: 2;
+display: -webkit-box;
+-webkit-box-orient: vertical;
 }
 
 

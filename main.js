@@ -1,14 +1,13 @@
 var React = require('react'),
     ReactDOM = require('react-dom'),
-    $ = require('jquery');
-
-var Swiper = require('swiper');
+    $ = require('jquery'),
+    Swiper = require('swiper');
 
 var TopBar = React.createClass({
     render: function() {
         return (
             <div className="top-bar">
-                <SearchBar value={this.props.curKeyword}/>
+                <SearchBar value={this.props.curKeyword} searchContentUpdate={this.props.onSearchContentUpdated}/>
                 <span>取消</span>
             </div>
         );
@@ -16,14 +15,12 @@ var TopBar = React.createClass({
 });
 
 var SearchBar = React.createClass({
-    getInitialState: function() {
-        return {
-            searchContent: ''
-        }
-    },
     render: function() {
         return (
-            <input type="text" placeholder="请输入你想搜索的内容" className="search-bar" value={this.props.value}/>
+            <input type="text" placeholder="请输入你想搜索的内容" className="search-bar" value={this.props.value}
+            onChange={this.props.searchContentUpdate}
+            onKeyDown={this.props.searchContentUpdate}
+            />
         );
     }
 });
@@ -83,8 +80,6 @@ var ResultList = React.createClass({
    }
 });
 
-
-
 var SearchApp = React.createClass({
     _setScrollAreaHeight: function() {
         var wh = $(window).height();
@@ -92,22 +87,7 @@ var SearchApp = React.createClass({
 
         $('.scroll-area').css('height', wh - th + 'px');
     },
-    updateCurKeyWord: function(keywordBeSelected) {
-        this.setState({
-            isDefault: false,
-            curKeyword: keywordBeSelected
-        });
-    },
-    getInitialState: function() {
-        return {
-                curKeyword: '',
-                keywords: [],
-                isDefault: true,
-                resultList: []
-        };
-    },
-    componentDidMount: function() {
-
+    _getKeywordsList: function() {
         $.ajax({
             url: 'data/keywords.json',
             dataType: 'json',
@@ -117,7 +97,8 @@ var SearchApp = React.createClass({
                 });
             }.bind(this)
         });
-
+    },
+    _getDefaultContent: function() {
         $.ajax({
             url: 'data/defaultresults.json',
             dataType: 'json',
@@ -128,6 +109,44 @@ var SearchApp = React.createClass({
             }.bind(this)
         });
     },
+    _getContentWithInputValue: function() {
+        $.ajax({
+            url: 'data/keywordresults.json',
+            success: function(data) {
+                this.setState({
+                    isDefault: false,
+                    resultList: data
+                });
+            }.bind(this)
+        });
+    },
+    updateWithKeyword: function(keywordBeSelected) {
+        this.setState({
+            curKeyword: keywordBeSelected
+        });
+        this._getContentWithInputValue();
+    },
+    getInitialState: function() {
+        return {
+                curKeyword: '',
+                keywords: [],
+                isDefault: true,
+                resultList: []
+        };
+    },
+    componentDidMount: function() {
+       this._getKeywordsList();
+       this._getDefaultContent();
+    },
+    updateWithSearchContent: function(e) {
+        this.setState({
+            curKeyword: e.target.value
+        })
+
+        if (e.keyCode === 13) {
+            this._getContentWithInputValue();
+        }
+    },
     componentDidUpdate: function() {
         this._setScrollAreaHeight();
     },
@@ -135,8 +154,8 @@ var SearchApp = React.createClass({
         return (
             <div className="search-view">
                 <div className="top-area">
-                    <TopBar curKeyword={this.state.curKeyword} />
-                    <KeywordsBar keywords={this.state.keywords} onKeywordSelected={this.updateCurKeyWord}/>
+                    <TopBar curKeyword={this.state.curKeyword} onSearchContentUpdated={this.updateWithSearchContent}/>
+                    <KeywordsBar keywords={this.state.keywords} onKeywordSelected={this.updateWithKeyword}/>
                     {this.state.isDefault ? <p className="msg">大家都在看:</p> : null}
                 </div>
                 <ResultList results={this.state.resultList}/>
