@@ -104,7 +104,7 @@ textarea:focus, input:focus{
 .top-bar .search-icon {
     width: 1rem;
     height: 1rem;
-    background-image: url('./search_icon.png');
+    background-image: url('../images/search_icon.png');
     background-size: 0.6rem 0.6rem;
     background-repeat: no-repeat;
     background-position: center center;
@@ -189,7 +189,6 @@ textarea:focus, input:focus{
     float: left;
     height: 3.5rem;
     word-wrap: break-word;
-    word-break; break-all;
     width: 80%;
     font-size: 0.6rem;
     color: #444;
