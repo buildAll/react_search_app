@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <title>YOHO!搜索</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta http-equiv="cleartype" content="on">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta content="telephone=no" name="format-detection" />
+    <meta content="email=no" name="format-detection" />
+    <script type="text/javascript">
+        (function(doc, win) {
+            var docEl = doc.documentElement;
+            (function() {
+                var clientWidth = docEl.clientWidth;
+                if (!clientWidth) {
+                    return;
+                }
+                docEl.style.fontSize = 20 * (clientWidth / 320) + 'px';
+            }());
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="./dist/styles/style.css">
+</head>
+<body>
+    <div id="search-app"></div>
+    <script src="./dist/scripts/app.js"></script>
+</body>
+</html>

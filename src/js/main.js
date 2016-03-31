@@ -11,8 +11,7 @@ var TopBar = React.createClass({
             <div className="top-bar">
                 <div className="search-icon"></div>
                 <SearchBar value={this.props.curKeyword} searchContentUpdate={this.props.onSearchContentUpdated}/>
-                <span className="delete-btn" onClick={this.props.onDeleteContent}>x</span>
-                <span className="cancel-btn">取消</span>
+                <span className="delete-btn" onClick={this.props.onDeleteContent}></span>
             </div>
         );
     }
@@ -64,25 +63,25 @@ var ResultItem = React.createClass({
     render: function() {
         return (
             <li className="result-item" >
-                <img src={this.props.thumbnail} />
-                <div>
-                    {this.props.content}
-                </div>
+                <a href={this.props.contentUrl}>
+                    <img src={this.props.thumbnail} />
+                    <div dangerouslySetInnerHTML={{__html: this.props.content}}></div>
+                </a>
             </li>
         );
     }
 });
 
 var ResultList = React.createClass({
-   render: function() {
+    render: function() {
         return (
             <ul>
                 {this.props.results.map(function(result, index) {
-                    return <ResultItem key={index} thumbnail={result.img} content={result.text}/>
+                    return <ResultItem key={index} contentUrl={result.url} thumbnail={result.pic} content={result.title}/>
                 })}
             </ul>
         );
-   }
+    }
 });
 
 var EmptyMsg = React.createClass({
@@ -107,23 +106,21 @@ var SearchApp = React.createClass({
     },
     _getKeywordsList: function() {
         $.ajax({
-            url: 'data/keywords.json',
-            dataType: 'json',
+            url: 'search/keyword ',
             success: function(data) {
                 this.setState({
-                    keywords: data
+                    keywords: JSON.parse(data)
                 });
             }.bind(this)
         });
     },
     _getDefaultContent: function() {
         $.ajax({
-            url: 'data/defaultresults.json',
-            dataType: 'json',
+            url: 'search/search?word=""',
             success: function(data) {
                 this.setState({
                     isDefault: true,
-                    resultList: data
+                    resultList: JSON.parse(data)
                 });
                 setTimeout(this._setScrollAreaHeight, 500)
             }.bind(this)
@@ -131,11 +128,11 @@ var SearchApp = React.createClass({
     },
     _getContentWithInputValue: function() {
         $.ajax({
-            url: 'data/keywordresults.json',
+            url: 'search/search?word=' + this.state.curKeyword,
             success: function(data) {
                 this.setState({
                     isDefault: false,
-                    resultList: data
+                    resultList: JSON.parse(data)
                 });
                 setTimeout(this._setScrollAreaHeight, 500)
             }.bind(this)

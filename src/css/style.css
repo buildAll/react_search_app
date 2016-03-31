@@ -73,17 +73,6 @@ textarea:focus, input:focus{
     background-color: #F0EFF5;
 }
 
-.top-bar .cancel-btn {
-    display: inline-block;
-    height: 1rem;
-    line-height: 1rem;
-    position: absolute;
-    top: 50%;
-    right: 8%;
-    margin-top: -0.5rem;
-    font-size: 0.7rem;
-    color: #1CA52A;
-}
 
 .top-bar .delete-btn {
     display: inline-block;
@@ -94,10 +83,13 @@ textarea:focus, input:focus{
     text-align: center;
     font-size: 0.4rem;
     color: #fff;
-    background-color: #888;
+    background-image: url('../images/delete.jpeg');
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-position: center center;
     position: absolute;
     top: 50%;
-    right: 20%;
+    right: 12%;
     margin-top: -0.25rem;
 }
 
@@ -110,7 +102,7 @@ textarea:focus, input:focus{
     background-position: center center;
     position: absolute;
     top: 50%;
-    left: 18%;
+    left: 11%;
     margin-top: -0.5rem;
     z-index: 99;
 }
@@ -122,7 +114,7 @@ textarea:focus, input:focus{
     appearance: none;
 
     display: block;
-    width: 65%;
+    width: 80%;
     height: 1.4rem;
     margin: 0 auto;
     box-sizing: border-box;
@@ -228,6 +220,10 @@ textarea:focus, input:focus{
     font-size: 0.6rem;
     color: #ccc;
     margin: 0.5rem 0;
+}
+
+.keyword {
+    color: green;
 }
 
 
