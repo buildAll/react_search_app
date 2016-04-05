@@ -33228,11 +33228,13 @@ else if (typeof define === 'function' && define.amd) {
 
 
 },{}],160:[function(require,module,exports){
+// basic global variables for the whole app
 var React = require('react'),
     ReactDOM = require('react-dom'),
     $ = require('jquery'),
     Swiper = require('swiper');
 
+// got the windowHegith at the very beginning in order to prevent the visual keyboard impact this value
 var windowHeight = $(window).height();
 
 var TopBar = React.createClass({
@@ -33309,7 +33311,11 @@ var ResultItem = React.createClass({
                 'a',
                 { href: this.props.contentUrl },
                 React.createElement('img', { src: this.props.thumbnail }),
-                React.createElement('div', { dangerouslySetInnerHTML: { __html: this.props.content } })
+                React.createElement(
+                    'div',
+                    { className: 'flex-box' },
+                    React.createElement('div', { dangerouslySetInnerHTML: { __html: this.props.content } })
+                )
             )
         );
     }
@@ -33378,8 +33384,7 @@ var SearchApp = React.createClass({
                 this.setState({
                     isDefault: true,
                     resultList: JSON.parse(data)
-                });
-                setTimeout(this._setScrollAreaHeight, 500);
+                }, this._setScrollAreaHeight);
             }.bind(this)
         });
     },
@@ -33390,16 +33395,14 @@ var SearchApp = React.createClass({
                 this.setState({
                     isDefault: false,
                     resultList: JSON.parse(data)
-                });
-                setTimeout(this._setScrollAreaHeight, 500);
+                }, this._setScrollAreaHeight);
             }.bind(this)
         });
     },
     updateWithKeyword: function (keywordBeSelected) {
         this.setState({
             curKeyword: keywordBeSelected
-        });
-        this._getContentWithInputValue();
+        }, this._getContentWithInputValue);
     },
     getInitialState: function () {
         return {
@@ -33414,20 +33417,18 @@ var SearchApp = React.createClass({
         this._getDefaultContent();
     },
     updateWithSearchContent: function (e) {
-        this.setState({
-            curKeyword: e.target.value
-        });
-
         if (e.keyCode === 13 || e.type === 'blur') {
             this._getContentWithInputValue();
+        } else {
+            this.setState({
+                curKeyword: e.target.value
+            });
         }
     },
     deleteInputContent: function () {
         this.setState({
             curKeyword: ''
-        });
-
-        this._getDefaultContent();
+        }, this._getDefaultContent);
     },
     componentDidUpdate: function () {
         this._setScrollAreaHeight();

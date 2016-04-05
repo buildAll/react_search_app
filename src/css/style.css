@@ -176,7 +176,7 @@ textarea:focus, input:focus{
     margin-top: 0.6rem;
 }
 
-.result-item div {
+.result-item .flex-box {
     display: inline-block;
     float: left;
     height: 3.5rem;
@@ -193,6 +193,10 @@ textarea:focus, input:focus{
     -moz-align-items: center;
     -webkit-align-items: center;
     align-items: center;
+}
+
+.result-item .flex-box div {
+    display: block;
 }
 
 .empty-result {
