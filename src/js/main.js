@@ -182,7 +182,10 @@ var SearchApp = React.createClass({
                         onSearchContentUpdated={this.updateWithSearchContent}
                         onDeleteContent={this.deleteInputContent}
                     />
-                    <KeywordsBar keywords={this.state.keywords} onKeywordSelected={this.updateWithKeyword}/>
+                    <KeywordsBar
+                        keywords={this.state.keywords}
+                        onKeywordSelected={this.updateWithKeyword}
+                    />
                 </div>
                 <div className="scroll-area">
                     {this.state.isDefault ? <p className="msg">大家都在看:</p> : null}
