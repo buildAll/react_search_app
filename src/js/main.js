@@ -1,3 +1,10 @@
+require('../css/style.css');
+require('../css/swiper.css');
+
+
+var CURRENT_ENV = 'dev';
+
+
 // basic global variables for the whole app
 var React = require('react'),
     ReactDOM = require('react-dom'),
@@ -6,6 +13,18 @@ var React = require('react'),
 
 // got the windowHegith at the very beginning in order to prevent the visual keyboard impact this value
 var windowHeight = $(window).height();
+
+
+var url = CURRENT_ENV === 'dev' ? {
+                keywordsURL: '../../data/keywords.json',
+                defaultContentURL: '../../data/defaultresults.json',
+                searchURL: '../../data/keywordresults.json'
+            } : {
+                keywordsURL: 'search/keyword',
+                defaultContentURL: 'search/search?word=""',
+                searchURL: 'search/search?word='
+            }
+
 
 var TopBar = React.createClass({
     render: function() {
@@ -110,32 +129,32 @@ var SearchApp = React.createClass({
     },
     _getKeywordsList: function() {
         $.ajax({
-            url: 'search/keyword ',
+            url: url.keywordsURL,
             success: function(data) {
                 this.setState({
-                    keywords: JSON.parse(data)
+                    keywords: CURRENT_ENV ==='dev'? data : JSON.parse(data)
                 });
             }.bind(this)
         });
     },
     _getDefaultContent: function() {
         $.ajax({
-            url: 'search/search?word=""',
+            url: url.defaultContentURL,
             success: function(data) {
                 this.setState({
                     isDefault: true,
-                    resultList: JSON.parse(data)
+                    resultList: CURRENT_ENV ==='dev'? data : JSON.parse(data)
                 }, this._setScrollAreaHeight);
             }.bind(this)
         });
     },
     _getContentWithInputValue: function() {
         $.ajax({
-            url: 'search/search?word=' + this.state.curKeyword,
+            url: url.searchURL + (CURRENT_ENV ==='dev' ? '' : this.state.curKeyword),
             success: function(data) {
                 this.setState({
                     isDefault: false,
-                    resultList: JSON.parse(data)
+                    resultList: CURRENT_ENV ==='dev'? data : JSON.parse(data)
                 }, this._setScrollAreaHeight);
             }.bind(this)
         });

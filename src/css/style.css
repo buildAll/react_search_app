@@ -83,7 +83,7 @@ textarea:focus, input:focus{
     text-align: center;
     font-size: 0.4rem;
     color: #fff;
-    background-image: url('../images/delete.jpeg');
+    background-image: url('../img/delete.jpeg');
     background-repeat: no-repeat;
     background-size: 100% auto;
     background-position: center center;
@@ -96,7 +96,7 @@ textarea:focus, input:focus{
 .top-bar .search-icon {
     width: 1rem;
     height: 1rem;
-    background-image: url('../images/search_icon.png');
+    background-image: url('../img/search_icon.png');
     background-size: 0.6rem 0.6rem;
     background-repeat: no-repeat;
     background-position: center center;
