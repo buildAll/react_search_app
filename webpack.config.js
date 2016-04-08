@@ -18,6 +18,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 // postcss
 const autoprefixer = require('autoprefixer');
 const precss = require('precss');
+const postcssImport = require('postcss-import');
 
 // project path config
 const PATHS = {
@@ -34,6 +35,18 @@ const common = {
     output: {
         path: PATHS.build,
         filename: '[name].js'
+    },
+    module: {
+        loaders: [
+            {
+                test:/\.js$/,
+                exclude: path.resolve(__dirname, "node_modules"),
+                loader:'babel',
+                query: {
+                    presets: ['es2015', 'react']
+                }
+            }
+        ]
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -61,28 +74,32 @@ if (TARGET === 'start' || !TARGET) {
             loaders: [
                 {
                     test: /\.css$/,
-                    loaders: ['style', 'css']
+                    loaders: ['style', 'css', 'postcss']
                 },
                 {
                     test: /\.jpg|png|jpeg/,
                     loader: 'url?limit=25000'
                 },
-                {
-                    test:/\.js$/,
-                    exclude: path.resolve(__dirname, "node_modules"),
-                    loader:'babel',
-                    query: {
-                        presets: ['es2015', 'react']
-                    }
-                }
+               // {
+               //     test:/\.js$/,
+               //     exclude: path.resolve(__dirname, "node_modules"),
+               //     loader:'babel',
+               //     query: {
+               //         presets: ['es2015', 'react']
+               //     }
+               // }
             ]
         },
         plugins: [
             new webpack.HotModuleReplacementPlugin()
         ],
-       // postcss: function() {
-       //     return [autoprefixer, precss];
-       // }
+        postcss: function(webpack) {
+            return [
+                postcssImport({addDependencyTo: webpack}),
+                autoprefixer,
+                precss
+            ];
+        }
     });
 }
 
@@ -123,7 +140,11 @@ if (TARGET === 'build') {
             new CleanWebpackPlugin([PATHS.build])
         ],
         postcss: function() {
-            return [autoprefixer, precss];
+            return [
+                postcssImport({addDependencyTo: webpack}),
+                autoprefixer,
+                precss
+            ];
         }
     });
 }
