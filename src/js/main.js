@@ -1,15 +1,14 @@
-require('../css/style.css');
-require('../css/swiper.css');
+import '../css/style.css';
+import '../css/swiper.css';
+
+// basic global variables for the whole app
+import React from 'react';
+import ReactDOM from 'react-dom';
+import $ from 'jquery';
+import Swiper from 'swiper';
 
 
 const CURRENT_ENV = 'dev';
-
-
-// basic global variables for the whole app
-const React = require('react'),
-      ReactDOM = require('react-dom'),
-      $ = require('jquery'),
-      Swiper = require('swiper');
 
 // got the windowHegith at the very beginning in order to prevent the visual keyboard impact this value
 const windowHeight = $(window).height();
