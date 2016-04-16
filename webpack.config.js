@@ -80,14 +80,6 @@ if (TARGET === 'start' || !TARGET) {
                     test: /\.jpg|png|jpeg/,
                     loader: 'url?limit=25000'
                 },
-               // {
-               //     test:/\.js$/,
-               //     exclude: path.resolve(__dirname, "node_modules"),
-               //     loader:'babel',
-               //     query: {
-               //         presets: ['es2015', 'react']
-               //     }
-               // }
             ]
         },
         plugins: [
@@ -107,7 +99,7 @@ if (TARGET === 'start' || !TARGET) {
 if (TARGET === 'build') {
     module.exports = merge(common, {
         entry: {
-            vendor: Object.keys(pkg.dependencies)
+            vendor: ['jquery', 'swiper']
         },
         output: {
             path: PATHS.build,
@@ -122,8 +114,7 @@ if (TARGET === 'build') {
                 },
                 {
                     test: /\.(jpg|png|jpeg)$/,
-                    loader: 'url?limit=25000',
-                    include: PATHS.images
+                    loader: 'url?limit=25000'
                 }
             ]
         },
