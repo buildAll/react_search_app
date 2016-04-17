@@ -1,12 +1,15 @@
-import '../css/style.css';
-import '../css/swiper.css';
+import '../css/style.css'
+import '../css/swiper.css'
 
 // basic global variables for the whole app
-import React from 'react';
-import ReactDOM from 'react-dom';
-import $ from 'jquery';
-import Swiper from 'swiper';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import $ from 'jquery'
 
+// components
+import TopBar from './components/TopBar'
+import KeywordsBar from './components/KeywordsBar'
+import ResultList from './components/ResultList'
 
 const CURRENT_ENV = 'dev';
 
@@ -24,84 +27,6 @@ const url = CURRENT_ENV === 'dev' ? {
                 searchURL: 'search/search?word='
             }
 
-
-const TopBar = ({curKeyword, onDeleteContent, onSearchContentUpdated}) => (
-    <div className="top-bar">
-        <div className="search-icon"></div>
-        <SearchBar value={curKeyword} searchContentUpdate={onSearchContentUpdated}/>
-        <span className="delete-btn" onClick={onDeleteContent}></span>
-    </div>
-);
-
-
-const SearchBar = ({value, searchContentUpdate}) => (
-    <input type="text" placeholder="请输入你想搜索的内容" className="search-bar" value={value}
-        onChange={searchContentUpdate}
-        onKeyDown={searchContentUpdate}
-        onBlur={searchContentUpdate}
-    />
-);
-
-class KeywordsBar extends React.Component {
-    _initSwiper() {
-        new Swiper(ReactDOM.findDOMNode(this), {
-            slidesPerView: 'auto',
-            grabCursor: true,
-            slideElement: 'li',
-            watchSlidesVisibility: true
-        })
-    }
-
-    keywordClicked(i) {
-        this.props.onKeywordSelected(i.name);
-    }
-
-    componentDidUpdate() {
-        this._initSwiper();
-    }
-
-    render() {
-        var thisComponent = this;
-
-        return (
-            <div className="swiper-container keywords-bar">
-                <ul className="swiper-wrapper">
-                    {this.props.keywords.map(function(keyword, index) {
-                        return <li
-                                className="swiper-slide"
-                                key={index}
-                                onClick={thisComponent.keywordClicked.bind(thisComponent, keyword)}
-                               >
-                                {keyword.name}
-                            </li>
-                    })}
-                </ul>
-            </div>
-        );
-    }
-}
-
-
-const ResultItem = ({contentUrl, thumbnail, content}) => (
-    <li className="result-item" >
-        <a href={contentUrl}>
-            <img src={thumbnail} />
-            <div className="flex-box">
-                <div dangerouslySetInnerHTML={{__html: content}}></div>
-            </div>
-        </a>
-    </li>
-);
-
-
-
-const ResultList = ({results}) => (
-    <ul>
-        {results.map(function(result, index) {
-            return <ResultItem key={index} contentUrl={result.url} thumbnail={result.pic} content={result.title}/>
-        })}
-    </ul>
-);
 
 const EmptyMsg = () => (
     <div className="empty-result">
