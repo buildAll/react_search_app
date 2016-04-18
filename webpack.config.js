@@ -50,9 +50,9 @@ const common = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'Search app',
-            template: './index.html',
-            filename: path.join(__dirname, 'index.min.html')
+            title: 'React Search app',
+            template: './index.tpl.html',
+            filename: path.join(__dirname, 'dist/index.html')
         }),
 
     ]
