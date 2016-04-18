@@ -47,15 +47,7 @@ const common = {
                 }
             }
         ]
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            title: 'React Search app',
-            template: './index.tpl.html',
-            filename: path.join(__dirname, 'dist/index.html')
-        }),
-
-    ]
+    }
 }
 
 // config for the development phase
@@ -84,6 +76,10 @@ if (TARGET === 'start' || !TARGET) {
             ]
         },
         plugins: [
+            new HtmlWebpackPlugin({
+                title: 'Search app',
+                template: './index.tpl.html'
+            }),
             new webpack.HotModuleReplacementPlugin()
         ],
         postcss: function(webpack) {
@@ -129,7 +125,12 @@ if (TARGET === 'build') {
                 names: ['vendor', 'manifest']
             }),
             new ExtractTextPlugin('[name].[chunkhash].css'),
-            new CleanWebpackPlugin([PATHS.build])
+            new CleanWebpackPlugin([PATHS.build]),
+            new HtmlWebpackPlugin({
+                title: 'React Search app',
+                template: './index.tpl.html',
+                filename: path.join(__dirname, 'dist/index.html')
+            })
         ],
         postcss: function() {
             return [
