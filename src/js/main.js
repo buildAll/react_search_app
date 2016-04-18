@@ -19,9 +19,9 @@ const windowHeight = $(window).height();
 
 
 const url = CURRENT_ENV === 'dev' ? {
-                keywordsURL: '../../data/keywords.json',
-                defaultContentURL: '../../data/defaultresults.json',
-                searchURL: '../../data/keywordresults.json'
+                keywordsURL: 'data/keywords.json',
+                defaultContentURL: 'data/defaultresults.json',
+                searchURL: 'data/keywordresults.json'
             } : {
                 keywordsURL: 'search/keyword',
                 defaultContentURL: 'search/search?word=""',
